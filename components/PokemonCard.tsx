@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import { Card, CardContent } from './ui/card'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 
@@ -48,20 +47,19 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon }) => {
     <Card className="h-full">
       <CardContent className="p-4">
         <div className="relative w-full h-32 mb-2">
-          <Image
+          <img
             src={pokemon.image_url}
             alt={pokemon.name}
-            layout="fill"
-            objectFit="contain"
-            priority
+            className="w-full h-full object-contain"
+            loading="lazy"
           />
         </div>
         <h3 className="text-lg font-semibold capitalize text-foreground">{pokemon.name}</h3>
         <p className="text-sm text-muted-foreground">Peso: {pokemon.weight / 10} kg</p>
         <div className="flex flex-wrap gap-1 mt-2">
           {pokemon.types.map((type) => (
-            <span 
-              key={type.id} 
+            <span
+              key={type.id}
               className={`px-2 py-1 rounded-full text-xs capitalize text-white ${typeColors[type.name] || 'bg-gray-400'}`}
             >
               {type.name}

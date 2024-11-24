@@ -8,6 +8,7 @@ import Progress from './ui/progress'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { config } from '@/lib/config'
 import { useWebSocket } from '@/app/hooks/useWebSocket'
+import { getCSRFToken } from '@/lib/utils'
 
 interface Pokemon {
   id: number
@@ -71,7 +72,13 @@ const PokemonImporter: React.FC = () => {
   const fetchPokemons = useCallback(async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`${config.apiUrl}/api/pokemons/`)
+      const csrfToken = getCSRFToken();
+      const response = await fetch(`${config.apiUrl}/api/pokemons/`, {
+        headers: {
+          'X-CSRFToken': csrfToken || '',
+        },
+        credentials: 'include', // Importante para incluir las cookies en la solicitud
+      })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -98,11 +105,15 @@ const PokemonImporter: React.FC = () => {
       setStatus('starting')
       setMessage('Iniciando importacion...')
       setProgress(0)
+      const csrfToken = getCSRFToken();
       const response = await fetch(`${config.apiUrl}/api/import-pokemon/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken || '',
         },
+        credentials: 'include',
+        
       })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
